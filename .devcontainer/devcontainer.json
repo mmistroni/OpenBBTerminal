@@ -18,7 +18,7 @@
     // --- Core Setup ---
     // The postCreateCommand now only handles the project-specific setup,
     // assuming the 'openbb_platform' directory exists under the workspace root.
-    "postCreateCommand": "cd openbb_platform && python dev_install.py && openbb-build",
+    "postCreateCommand": "python dev_install.py && openbb-build",
 
     // --- VS Code Extensions (Highly Recommended) ---
     // These extensions improve the Python development experience.

@@ -32,5 +32,6 @@ WORKDIR /workspaces/OpenBBTerminal/openbb_platform
 # Expose a default development port if your app uses one
 EXPOSE 8000
 
+
 # Environment variables
 ENV PYTHONUNBUFFERED 1
