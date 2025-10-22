@@ -19,5 +19,6 @@
 "containerEnv": {
 "POETRY_VIRTUALENVS_IN_PROJECT": "true"
 },
-"postCreateCommand": "cd openbb_platform && pip install poetry && python dev_install.py && openbb-build"
+// In .devcontainer/devcontainer.json
+"postCreateCommand": "/bin/bash .devcontainer/post_create_setup.sh"
 }
