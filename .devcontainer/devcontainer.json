@@ -1,24 +1,43 @@
 {
-"name": "OpenBB Platform Venv Dev Environment",
-"build": {
-"dockerfile": "Dockerfile"
-},
-"customizations": {
-"vscode": {
-"extensions": [
-"ms-python.python",
-"ms-python.vscode-pylance",
-"EditorConfig.EditorConfig"
-],
-"settings": {
-"python.defaultInterpreterPath": "${workspaceFolder}/openbb_platform/.venv/bin/python"
-}
-}
-},
-"remoteUser": "root",
-"containerEnv": {
-"POETRY_VIRTUALENVS_IN_PROJECT": "true"
-},
-// In .devcontainer/devcontainer.json
-"postCreateCommand": "/bin/bash .devcontainer/post_create_setup.sh"
+    "name": "OpenBB Dev Container",
+    // Use the Dockerfile you just updated to build the container image
+    "build": {
+        "dockerfile": "Dockerfile",
+        // The context is typically the root of your project
+        "context": ".."
+    },
+
+    // Set the default user to 'root' or 'vscode' based on your preference
+    // 'root' is often easier for initial setup like this
+    "remoteUser": "root",
+    
+    // Set the workspace folder to match the WORKDIR in your Dockerfile
+    // The OpenBB repository is typically cloned here: /workspaces/OpenBBTerminal
+    "workspaceFolder": "/workspaces/OpenBBTerminal", 
+
+    // --- Core Setup ---
+    // The postCreateCommand now only handles the project-specific setup,
+    // assuming the 'openbb_platform' directory exists under the workspace root.
+    "postCreateCommand": "cd openbb_platform && python dev_install.py && openbb-build",
+
+    // --- VS Code Extensions (Highly Recommended) ---
+    // These extensions improve the Python development experience.
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.testing.pytestEnabled": true
+            },
+            "extensions": [
+                "ms-python.python", // Python Extension (IntelliSense, Debugging, etc.)
+                "ms-python.vscode-pylance", // Pylance (faster/better type checking)
+                "ms-azuretools.vscode-docker", // Docker support
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    },
+    
+    // --- Ports ---
+    // Forward the default REST API port for easy access
+    "forwardPorts": [8000]
 }
