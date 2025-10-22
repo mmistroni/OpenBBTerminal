@@ -1,0 +1,30 @@
+{
+  "name": "OpenBB Platform Venv Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "EditorConfig.EditorConfig"
+      ],
+      "settings": {
+        // Tells VS Code to select the interpreter from the locally created .venv folder
+        // which is created by the dev_install.py script using Poetry.
+        "python.defaultInterpreterPath": "${workspaceFolder}/openbb_platform/.venv/bin/python"
+      }
+    }
+  },
+  
+  "remoteUser": "root",
+
+  // Ensure Poetry creates the virtual environment inside the openbb_platform directory (e.g., as openbb_platform/.venv).
+  "containerEnv": {
+    "POETRY_VIRTUALENVS_IN_PROJECT": "true"
+  },
+
+  // This command executes after the container is created, setting up the OpenBB platform.
+  // The dev_install.py script will now create and populate the local virtual environment.
+  "postCreateCommand": "cd openbb_platform && pip install poetry && python dev_install.py && openbb-build"
+}
