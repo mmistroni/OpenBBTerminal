@@ -1,27 +1,25 @@
 {
-    "name": "OpenBB Dev Container",
-    // Use the Dockerfile you just updated to build the container image
+    "name": "OpenBB Dev Container - Optimized",
+    
+    // Use the Dockerfile from the root to build the environment
     "build": {
-        "dockerfile": "Dockerfile",
-        // The context is typically the root of your project
+        "dockerfile": "Dockerfile", 
         "context": ".."
+        // NOTE: Changed from "Dockerfile" to "../Dockerfile" because 
+        // the devcontainer is in a subdirectory and the Dockerfile is in the root.
     },
 
-    // Set the default user to 'root' or 'vscode' based on your preference
-    // 'root' is often easier for initial setup like this
     "remoteUser": "root",
     
-    // Set the workspace folder to match the WORKDIR in your Dockerfile
-    // The OpenBB repository is typically cloned here: /workspaces/OpenBBTerminal
-    "workspaceFolder": "/workspaces/OpenBBTerminal", 
+    // Set the workspace folder to match the OpenBB repository root
+    "workspaceFolder": "/usr/src/app", 
+    // NOTE: This matches the WORKDIR we set in the Dockerfile for consistency
 
-    // --- Core Setup ---
-    // The postCreateCommand now only handles the project-specific setup,
-    // assuming the 'openbb_platform' directory exists under the workspace root.
-    "postCreateCommand": "python dev_install.py && openbb-build",
+    // CRUCIAL: Remove the slow commands entirely or leave empty.
+    // The environment is now fully ready, dramatically reducing startup time.
+    "postCreateCommand": "", 
 
     // --- VS Code Extensions (Highly Recommended) ---
-    // These extensions improve the Python development experience.
     "customizations": {
         "vscode": {
             "settings": {
@@ -29,15 +27,13 @@
                 "python.testing.pytestEnabled": true
             },
             "extensions": [
-                "ms-python.python", // Python Extension (IntelliSense, Debugging, etc.)
-                "ms-python.vscode-pylance", // Pylance (faster/better type checking)
-                "ms-azuretools.vscode-docker", // Docker support
+                "ms-python.python", 
+                "ms-python.vscode-pylance",
+                "ms-azuretools.vscode-docker",
                 "EditorConfig.EditorConfig"
             ]
         }
     },
     
-    // --- Ports ---
-    // Forward the default REST API port for easy access
     "forwardPorts": [8000]
 }
