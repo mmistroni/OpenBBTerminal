@@ -3,7 +3,7 @@
     
     // Use the Dockerfile from the root to build the environment
     "build": {
-        "dockerfile": "Dockerfile", 
+        "dockerfile": "build/docker/platform.dockerfile", 
         "context": ".."
         // NOTE: Changed from "Dockerfile" to "../Dockerfile" because 
         // the devcontainer is in a subdirectory and the Dockerfile is in the root.
@@ -11,10 +11,6 @@
 
     "remoteUser": "root",
     
-    // Set the workspace folder to match the OpenBB repository root
-    "workspaceFolder": "/usr/src/app", 
-    // NOTE: This matches the WORKDIR we set in the Dockerfile for consistency
-
     // CRUCIAL: Remove the slow commands entirely or leave empty.
     // The environment is now fully ready, dramatically reducing startup time.
     "postCreateCommand": "", 
