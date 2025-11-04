@@ -3,17 +3,18 @@
     
     // Use the Dockerfile from the root to build the environment
     "build": {
-        "dockerfile": "build/docker/platform.dockerfile", 
+        // --- THIS IS THE CRITICAL CHANGE ---
+        // Move UP (../) from .devcontainer/, then DOWN to the file
+        "dockerfile": "../build/docker/platform.dockerfile", 
+        // The context is still ".." (the repo root), which is correct.
         "context": ".."
-        // NOTE: Changed from "Dockerfile" to "../Dockerfile" because 
-        // the devcontainer is in a subdirectory and the Dockerfile is in the root.
     },
 
     "remoteUser": "root",
     
     // CRUCIAL: Remove the slow commands entirely or leave empty.
     // The environment is now fully ready, dramatically reducing startup time.
-    "postCreateCommand": "", 
+    "postCreateCommand": "apt-get update && apt-get install -y git && poetry install", 
 
     // --- VS Code Extensions (Highly Recommended) ---
     "customizations": {
