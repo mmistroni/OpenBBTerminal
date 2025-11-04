@@ -21,7 +21,10 @@
         "vscode": {
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.testing.pytestEnabled": true
+                "python.testing.pytestEnabled": true,
+                // --- ADD THESE GIT SETTINGS ---
+                "git.terminalGitName": "Your Name", 
+                "git.terminalGitEmail": "your.email@example.com"
             },
             "extensions": [
                 "ms-python.python", 
