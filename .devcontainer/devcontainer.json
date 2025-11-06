@@ -14,7 +14,7 @@
     
     // CRUCIAL: Remove the slow commands entirely or leave empty.
     // The environment is now fully ready, dramatically reducing startup time.
-    "postCreateCommand": "apt-get update && apt-get install -y git && poetry install", 
+    "postCreateCommand": "apt-get update && apt-get install -y git && git config --global user.name \"mmistroni\" && git config --global user.email \"mmistroni@gmail.com\" && eval $(echo \"$OPENBB_ENV_VARS\" | python3 -c 'import sys, json; config = json.loads(sys.stdin.read()); print(\" \".join([f\"{k}=\\\"{v}\\\"\" for k, v in config.items()]))') && poetry install", 
 
     // --- VS Code Extensions (Highly Recommended) ---
     "customizations": {
@@ -23,8 +23,8 @@
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
                 "python.testing.pytestEnabled": true,
                 // --- ADD THESE GIT SETTINGS ---
-                "git.terminalGitName": "mmistroni", 
-                "git.terminalGitEmail": "mmistroni@gmail.com"
+                
+                
             },
             "extensions": [
                 "ms-python.python", 
