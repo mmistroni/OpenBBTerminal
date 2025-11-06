@@ -16,6 +16,7 @@
     // The environment is now fully ready, dramatically reducing startup time.
     "postCreateCommand": "apt-get update && apt-get install -y git && git config --global user.name \"mmistroni\" && git config --global user.email \"mmistroni@gmail.com\" && eval $(echo \"$OPENBB_ENV_VARS\" | python3 -c 'import sys, json; config = json.loads(sys.stdin.read()); print(\" \".join([f\"{k}=\\\"{v}\\\"\" for k, v in config.items()]))') && poetry install", 
 
+    
     // --- VS Code Extensions (Highly Recommended) ---
     "customizations": {
         "vscode": {
