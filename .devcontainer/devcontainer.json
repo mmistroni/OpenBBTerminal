@@ -14,13 +14,7 @@
     
     // CRUCIAL: Remove the slow commands entirely or leave empty.
     // The environment is now fully ready, dramatically reducing startup time.
-    "postCreateCommand": [
-            "apt-get update && apt-get install -y git && git config --global user.name \"mmistroni\" && git config --global user.email \"mmistroni@gmail.com\"  && poetry install", 
-            "chmod +x .devcontainer/env_setup.sh",
-            // 2. Run the script once to *CREATE* the environment file (.codespace_env)
-            ".devcontainer/env_setup.sh"
-
-    ],
+    "postCreateCommand": "apt-get update && apt-get install -y git && git config --global user.name \"mmistroni\" && git config --global user.email \"mmistroni@gmail.com\" && poetry install && chmod +x .devcontainer/env_setup.sh && .devcontainer/env_setup.sh",
 
     // Command that runs EVERY TIME the Codespace starts/resumes
     // This adds a 'source' command to the .bashrc file, guaranteeing the variables load.
