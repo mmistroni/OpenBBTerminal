@@ -17,10 +17,14 @@
     "postCreateCommand": [
             "apt-get update && apt-get install -y git && git config --global user.name \"mmistroni\" && git config --global user.email \"mmistroni@gmail.com\"  && poetry install", 
             "chmod +x .devcontainer/env_setup.sh",
+            // 2. Run the script once to *CREATE* the environment file (.codespace_env)
+            ".devcontainer/env_setup.sh"
 
     ],
-    "postStartCommand": "source .devcontainer/env_setup.sh",
-    
+
+    // Command that runs EVERY TIME the Codespace starts/resumes
+    // This adds a 'source' command to the .bashrc file, guaranteeing the variables load.
+    "postStartCommand": "echo 'source /workspaces/OpenBBTerminal/.codespace_env' >> ~/.bashrc",
     // --- VS Code Extensions (Highly Recommended) ---
     "customizations": {
         "vscode": {
