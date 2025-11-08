@@ -1,50 +1,57 @@
 #!/bin/bash
 
-# --- env_setup.sh ---
+# --- env_setup.sh (EVAL VERSION) ---
 
-# Define the file where we will write the variables. 
+# Define the files where we will write the variables and the error log
 ENV_FILE="/workspaces/OpenBBTerminal/.codespace_env"
+ERROR_FILE="/workspaces/OpenBBTerminal/.codespace_env_error.log"
 
-# 1. Get the source variable.
+# Define the source variable.
 CONFIG_STRING="${OPENBB_ENV_VARS}"
 
 if [ -z "$CONFIG_STRING" ]; then
-    echo "Warning: OPENBB_ENV_VARS is not set or is empty. Skipping environment setup."
+    echo "Warning: OPENBB_ENV_VARS is not set or is empty. Skipping environment setup." >&2
     exit 0
 fi
 
-# 2. Use Python to parse the JSON, clean the string, and write 'export KEY=VALUE' commands to the file
+# 2. Use Python to parse the dictionary and handle errors.
 PYTHON_COMMAND="
-import json
 import os
 import sys
 
-# Get the output path from the shell argument
 output_file = sys.argv[1] 
+error_file = sys.argv[2]
 config_string = os.environ['OPENBB_ENV_VARS']
 
-# CRITICAL FIX: Strip all newlines, carriage returns, and leading/trailing whitespace 
-# before attempting to decode the JSON. This handles secrets formatting issues.
+# CRITICAL: Clean up string, especially for multi-line secrets
 cleaned_config_string = config_string.replace('\n', '').replace('\r', '').strip() 
 
 try:
-    # Use the cleaned string for robust JSON loading
-    config_dict = json.loads(cleaned_config_string)
-except json.JSONDecodeError as e:
-    print(f'Error: OPENBB_ENV_VARS is not valid JSON. {e}', file=sys.stderr)
-    sys.exit(1)
-except KeyError:
-    # Should be caught by the shell script, but good practice
-    sys.exit(0)
+    # >>> CRITICAL CHANGE: Use eval() <<<
+    # Note: Keys in the dictionary literal must be strings (e.g., {'KEY': 'value'})
+    config_dict = eval(cleaned_config_string)
+    
+    if not isinstance(config_dict, dict):
+        raise TypeError('Evaluated result was not a dictionary.')
 
-# Open the file and write the export commands
+except Exception as e:
+    # WRITE THE ERROR MESSAGE TO THE ERROR LOG
+    import traceback
+    with open(error_file, 'w') as f:
+        f.write(f'--- EVAL PARSE ERROR ---\\n')
+        f.write(f'Error Type: {type(e).__name__}\\n')
+        f.write(f'Error Message: {e}\\n')
+        f.write(f'Offending String (Truncated): {cleaned_config_string[:200]}...\\n')
+        f.write('\\n--- Traceback ---\\n')
+        traceback.print_exc(file=f)
+    sys.exit(1) # Exit with failure
+
+# Open the environment file and write the export commands
 with open(output_file, 'w') as f:
     for key, value in config_dict.items():
-        # Ensure values are quoted for safety
-        f.write(f\"export {key}='{value}'\\n\")
-
-print(f\"Successfully wrote environment variables to {output_file}\", file=sys.stderr)
+        # Ensure keys and values are treated as strings for export
+        f.write(f\"export {str(key)}='{str(value)}'\\n\")
 "
 
-# Execute the Python command, passing the output file path as an argument.
-python3 -c "$PYTHON_COMMAND" "$ENV_FILE"
+# Execute the Python command, passing both file paths.
+python3 -c "$PYTHON_COMMAND" "$ENV_FILE" "$ERROR_FILE"
