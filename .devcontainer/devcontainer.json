@@ -9,6 +9,15 @@
         // The context is still ".." (the repo root), which is correct.
         "context": ".."
     },
+    "remoteEnv": {
+    // Map the automatically uppercased secret (FMP_API_KEY) 
+    // to the lowercase variable your application expects (fmp_api_key)
+        "fmp_api_key": "${containerEnv:FMP_API_KEY}",
+        "fred_api_key": "${containerEnv:FRED_API_KEY}",
+        "openai_api_key": "${containerEnv:OPENAI_API_KEY}",
+        "benzinga_api_key": "${containerEnv:BENZINGA_API_KEY}"
+
+    }, 
 
     "remoteUser": "root",
     
