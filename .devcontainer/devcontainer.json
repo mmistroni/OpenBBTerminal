@@ -11,17 +11,17 @@
     },
     "containerEnv": {
         // Correct way: The system automatically looks up the Secret for FMP_API_KEY
-        "fmp_api_key": "FMP_API_KEY", 
-        "fred_api_key": "FRED_API_KEY",
-        "openai_api_key": "OPENAI_API_KEY",
-        "benzinga_api_key": "BENZINGA_API_KEY"
+        //"fmp_api_key": "FMP_API_KEY", 
+        //"fred_api_key": "FRED_API_KEY",
+        //"openai_api_key": "OPENAI_API_KEY",
+        //"benzinga_api_key": "BENZINGA_API_KEY"
     } ,
 
     "remoteUser": "root",
     
     // CRUCIAL: Remove the slow commands entirely or leave empty.
     // The environment is now fully ready, dramatically reducing startup time.
-    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && poetry install && chmod +x .devcontainer/env_setup.sh",
+    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && poetry install && chmod +x .devcontainer/env_setup.sh && **./.devcontainer/env_setup.sh**",
 
     // Command that runs EVERY TIME the Codespace starts/resumes
     // This adds a 'source' command to the .bashrc file, guaranteeing the variables load.
