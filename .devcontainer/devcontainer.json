@@ -1,40 +1,30 @@
 {
     "name": "OpenBB Dev Container - Optimized",
     
-    // Use the Dockerfile from the root to build the environment
+    // --- BUILD CONFIGURATION ---
     "build": {
-        // --- THIS IS THE CRITICAL CHANGE ---
-        // Move UP (../) from .devcontainer/, then DOWN to the file
+        // Assuming this path to your Dockerfile is correct
         "dockerfile": "../build/docker/platform.dockerfile", 
-        // The context is still ".." (the repo root), which is correct.
         "context": ".."
     },
-    "containerEnv": {
-        // Correct way: The system automatically looks up the Secret for FMP_API_KEY
-        //"fmp_api_key": "FMP_API_KEY", 
-        //"fred_api_key": "FRED_API_KEY",
-        //"openai_api_key": "OPENAI_API_KEY",
-        //"benzinga_api_key": "BENZINGA_API_KEY"
-    } ,
 
     "remoteUser": "root",
     
-    // CRUCIAL: Remove the slow commands entirely or leave empty.
-    // The environment is now fully ready, dramatically reducing startup time.
-    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && poetry install && chmod +x .devcontainer/populate_env.py && **./.devcontainer/env_setup.sh**",
+    // --- POST CREATE COMMAND (Runs ONLY the first time the Codespace is created) ---
+    // This command now handles all initial setup and, crucially, adds the variable
+    // loading logic to the root user's shell profile.
+    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && chmod +x .devcontainer/populate_env.py && **echo 'python3 .devcontainer/populate_env.py && source /tmp/codespace_env_exports' >> /root/.bashrc**",
 
-    // Command that runs EVERY TIME the Codespace starts/resumes
-    // This adds a 'source' command to the .bashrc file, guaranteeing the variables load.
-    "postStartCommand": "python3 .devcontainer/populate_env.py",
-    // --- VS Code Extensions (Highly Recommended) ---
+    // --- POST START COMMAND (Set to empty, as the logic is now in .bashrc) ---
+    // The shell profile (.bashrc) will handle the variable loading upon every start/resume.
+    "postStartCommand": "",
+
+    // --- VS Code Extensions ---
     "customizations": {
         "vscode": {
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.testing.pytestEnabled": true,
-                // --- ADD THESE GIT SETTINGS ---
-                
-                
+                "python.testing.pytestEnabled": true
             },
             "extensions": [
                 "ms-python.python", 
