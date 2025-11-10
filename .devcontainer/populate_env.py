@@ -30,7 +30,7 @@ def populate_env_from_json():
         exports = []
         for key, value in config_dict.items():
             # Ensure keys are valid environment variable names (conventionally uppercase)
-            env_key = str(key).upper()
+            env_key = str(key)#.upper()
             
             # Escape value for shell safety and ensure it's a string
             env_value = str(value).replace("'", "'\\''")
