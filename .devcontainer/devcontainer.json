@@ -13,11 +13,11 @@
     // --- POST CREATE COMMAND (Runs ONLY the first time the Codespace is created) ---
     // This command now handles all initial setup and, crucially, adds the variable
     // loading logic to the root user's shell profile.
-    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && **git config --global commit.gpgsign false && git config --global gpg.program false**&& chmod +x .devcontainer/populate_env.py && **echo 'python3 .devcontainer/populate_env.py && source /tmp/codespace_env_exports' >> /root/.bashrc**",
+    "postCreateCommand": "apt-get update && apt-get install -y git gnupg",
 
     // --- POST START COMMAND (Set to empty, as the logic is now in .bashrc) ---
     // The shell profile (.bashrc) will handle the variable loading upon every start/resume.
-    "postStartCommand": "",
+    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && git config --global commit.gpgsign false && git config --global gpg.program false && chmod +x .devcontainer/populate_env.py && echo 'python3 .devcontainer/populate_env.py && source /tmp/codespace_env_exports' >> /root/.bashrc",
 
     // --- VS Code Extensions ---
     "customizations": {
