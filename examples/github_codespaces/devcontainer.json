@@ -1,0 +1,39 @@
+{
+    "name": "OpenBB Dev Container - Optimized",
+    
+    // --- BUILD CONFIGURATION ---
+    "build": {
+        // Assuming this path to your Dockerfile is correct
+        "dockerfile": "../build/docker/platform.dockerfile", 
+        "context": ".."
+    },
+
+    "remoteUser": "root",
+    
+    // --- POST CREATE COMMAND (Runs ONLY the first time the Codespace is created) ---
+    // This command now handles all initial setup and, crucially, adds the variable
+    // loading logic to the root user's shell profile.
+    "postCreateCommand": "apt-get update && apt-get install -y git gnupg",
+
+    // --- POST START COMMAND (Set to empty, as the logic is now in .bashrc) ---
+    // The shell profile (.bashrc) will handle the variable loading upon every start/resume.
+    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && git config commit.gpgsign false  chmod +x .devcontainer/populate_env.py && echo 'python3 .devcontainer/populate_env.py && source /tmp/codespace_env_exports' >> /root/.bashrc",
+
+    // --- VS Code Extensions ---
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.testing.pytestEnabled": true
+            },
+            "extensions": [
+                "ms-python.python", 
+                "ms-python.vscode-pylance",
+                "ms-azuretools.vscode-docker",
+                "EditorConfig.EditorConfig"
+            ]
+        }
+    },
+    
+    "forwardPorts": [8000]
+}
