@@ -179,10 +179,7 @@ def main():
     vix_df  = obb.equity.price.historical(symbol='^VIX', provider='yfinance').to_df()
     for c in vix_df.columns:
         print(c)
-    vixSentiment = VixSentimentCalculator()
-    sentiment  = vixSentiment.calculate_sentiment(vix_df, cot_df)
-    print(sentiment)
-
+    
 
 if __name__ == "__main__":
     main()
