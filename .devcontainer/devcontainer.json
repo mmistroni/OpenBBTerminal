@@ -3,7 +3,6 @@
     
     // --- BUILD CONFIGURATION ---
     "build": {
-        // Assuming this path to your Dockerfile is correct
         "dockerfile": "../build/docker/platform.dockerfile", 
         "context": ".."
     },
@@ -11,14 +10,10 @@
     "remoteUser": "root",
     
     // --- POST CREATE COMMAND (Runs ONLY the first time the Codespace is created) ---
-    "postCreateCommand": "apt-get update && apt-get install -y git gnupg",
+    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && echo 'source /tmp/codespace_env_exports' >> /root/.bashrc",
 
     // --- POST START COMMAND (Runs on every start/resume) ---
-    // Action 1: Set Git Config
-    // Action 2: Ensure script is executable
-    // Action 3: CRITICAL CHANGE - Execute the Python script immediately to generate the environment file. 
-    //           (The previous line that appended to /root/.bashrc is removed, as it only fixed the terminal, not the IDE/Debugger).
-    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && chmod +x .devcontainer/populate_env.py && python3 .devcontainer/populate_env.py > /tmp/codespace_env_exports",
+    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && chmod +x .devcontainer/populate_env.py && python3 .devcontainer/populate_env.py > /tmp/codespace_env_exports && cp /tmp/codespace_env_exports .env && echo '--- /tmp/codespace_env_exports contents ---' && cat /tmp/codespace_env_exports && echo '--- End of env file ---'",
 
     // --- VS Code Extensions ---
     "customizations": {
@@ -26,8 +21,9 @@
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
                 "python.testing.pytestEnabled": true,
-                // CRITICAL CHANGE: Tell the Python extension where to load the environment variables from.
-                "python.envFile": "/tmp/codespace_env_exports" 
+                // CRITICAL IDE FIX: The IDE often has issues reading /tmp/files.
+                // We point it to the stable .env file in the workspace root, which is created above.
+                "python.envFile": "${workspaceFolder}/.env"
             },
             "extensions": [
                 "ms-python.python", 
