@@ -11,20 +11,23 @@
     "remoteUser": "root",
     
     // --- POST CREATE COMMAND (Runs ONLY the first time the Codespace is created) ---
-    // This command now handles all initial setup and, crucially, adds the variable
-    // loading logic to the root user's shell profile.
     "postCreateCommand": "apt-get update && apt-get install -y git gnupg",
 
-    // --- POST START COMMAND (Set to empty, as the logic is now in .bashrc) ---
-    // The shell profile (.bashrc) will handle the variable loading upon every start/resume.
-    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && git config commit.gpgsign false  chmod +x .devcontainer/populate_env.py && echo 'python3 .devcontainer/populate_env.py && source /tmp/codespace_env_exports' >> /root/.bashrc",
+    // --- POST START COMMAND (Runs on every start/resume) ---
+    // Action 1: Set Git Config
+    // Action 2: Ensure script is executable
+    // Action 3: CRITICAL CHANGE - Execute the Python script immediately to generate the environment file. 
+    //           (The previous line that appended to /root/.bashrc is removed, as it only fixed the terminal, not the IDE/Debugger).
+    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && chmod +x .devcontainer/populate_env.py && python3 .devcontainer/populate_env.py > /tmp/codespace_env_exports",
 
     // --- VS Code Extensions ---
     "customizations": {
         "vscode": {
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.testing.pytestEnabled": true
+                "python.testing.pytestEnabled": true,
+                // CRITICAL CHANGE: Tell the Python extension where to load the environment variables from.
+                "python.envFile": "/tmp/codespace_env_exports" 
             },
             "extensions": [
                 "ms-python.python", 

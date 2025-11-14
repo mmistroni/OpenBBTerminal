@@ -17,13 +17,14 @@ Since it spins off a docker en, there will be
              "fred_api_key":"<your fred key>"
              }
 
-### SETUPU
+### SETUP
 You will need to :
 1 - Create a .devcontainer directory under OpenBBTerminal
 2 - Put  devcontainer.json and populate_env.py under this directory
 
 ### TESTING YOUR SETUP
-Once your codespace is setup, you can test it by running the script  OpenBBTerminal\examples\github_codespaces\cot.py
+Once your codespace is setup, you can test it by running the script  OpenBBTerminal\examples\github_codespaces\cot.py, which exercises
+fmp_api_key so as to prove your setup is correct.
 
 ### LIMITATIONS
 Once your codespace is running you might have issues with git commits.. You will get errors when committing files  related to your gpg
