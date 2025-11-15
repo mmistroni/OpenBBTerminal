@@ -10,19 +10,23 @@
     "remoteUser": "root",
     
     // --- POST CREATE COMMAND (Runs ONLY the first time the Codespace is created) ---
-    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && echo 'source /tmp/codespace_env_exports' >> /root/.bashrc",
+    // 1. Run the Python script and redirect its 'export KEY="VALUE"' output to the temporary file.
+    // 2. Append a command to the shell profile (`.bashrc`) to SOURCE this file on every session start.
+    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && chmod +x .devcontainer/populate_env.py && python3 .devcontainer/populate_env.py > /tmp/codespace_env_exports && echo 'source /tmp/codespace_env_exports' >> /root/.bashrc",
 
     // --- POST START COMMAND (Runs on every start/resume) ---
-    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && chmod +x .devcontainer/populate_env.py && python3 .devcontainer/populate_env.py > /tmp/codespace_env_exports && cp /tmp/codespace_env_exports .env && echo '--- /tmp/codespace_env_exports contents ---' && cat /tmp/codespace_env_exports && echo '--- End of env file ---'",
+    // 1. Git configuration runs first.
+    // 2. Copy the shell-compatible file to the project root `.env` file for the VS Code extension to read.
+    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && cp /tmp/codespace_env_exports .env && echo '--- .env file contents copied to .env ---' && cat .env && echo '--- End of env file ---'",
 
-    // --- VS Code Extensions ---
+    // --- VS Code Extensions and Settings ---
     "customizations": {
         "vscode": {
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
                 "python.testing.pytestEnabled": true,
-                // CRITICAL IDE FIX: The IDE often has issues reading /tmp/files.
-                // We point it to the stable .env file in the workspace root, which is created above.
+                // CRITICAL FIX: This setting tells the Python extension (debugger, testing)
+                // to explicitly load variables from the `.env` file created above.
                 "python.envFile": "${workspaceFolder}/.env"
             },
             "extensions": [

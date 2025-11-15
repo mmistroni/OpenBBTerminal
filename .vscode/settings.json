@@ -1,0 +1,4 @@
+{
+    // ... other settings
+    "python.envFile": "${workspaceFolder}/.env"
+}
