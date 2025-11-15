@@ -1,5 +1,5 @@
 {
-    "name": "OpenBB Dev Container - Optimized",
+    "name": "OpenBB Dev Container - Clean Environment",
     
     // --- BUILD CONFIGURATION ---
     "build": {
@@ -9,25 +9,43 @@
 
     "remoteUser": "root",
     
-    // --- POST CREATE COMMAND (Runs ONLY the first time the Codespace is created) ---
-    // 1. Run the Python script and redirect its 'export KEY="VALUE"' output to the temporary file.
-    // 2. Append a command to the shell profile (`.bashrc`) to SOURCE this file on every session start.
-    "postCreateCommand": "apt-get update && apt-get install -y git gnupg && chmod +x .devcontainer/populate_env.py && python3 .devcontainer/populate_env.py > /tmp/codespace_env_exports && echo 'source /tmp/codespace_env_exports' >> /root/.bashrc",
+    // --- CRITICAL SECTION: containerEnv ---
+    // Maps individual Codespace Secrets (right side) to individual 
+    // environment variables (left side) that are instantly available 
+    // in the container's environment (terminal and application).
+    "containerEnv": {
+        // Map your application's expected variable name to your Codespace Secret name:
+        "fmp_api_key": "${localEnv:FMP_API_KEY}",
+        "benzinga_api_key": "${localEnv:BENZINGA_API_KEY}",
+        "fred_api_key": "${localEnv:FRED_API_KEY}",
+        // Add all your other individual API keys here...
+        "intrinio_api_key":"${localEnv:INTRINIO_API_KEY}",
+        "polygon_api_key":"${localEnv:POLYGON_API_KEY}",
+        "trading_economics_api_key":"${localEnv:TRADING_ECONOMICS_API_KEY}",
+        "api_key_intrinio":"${localEnv:API_KEY_INTRINIO}",
+        "api_key_nasdaq":"${localEnv:API_KEY_NASDAQ}",
+        "openai_api_key":"${localEnv:OPENAI_API_KEY}",
 
-    // --- POST START COMMAND (Runs on every start/resume) ---
-    // 1. Git configuration runs first.
-    // 2. Copy the shell-compatible file to the project root `.env` file for the VS Code extension to read.
-    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && cp /tmp/codespace_env_exports .env && echo '--- .env file contents copied to .env ---' && cat .env && echo '--- End of env file ---'",
+        // Other critical variables (if stored as secrets):
+        "GIT_USER_NAME": "${localEnv:GIT_USER_NAME}",
+        "GIT_USER_EMAIL": "${localEnv:GIT_USER_EMAIL}"
+    },
+    
+    // --- POST CREATE COMMAND (Simplified: No Python script needed) ---
+    "postCreateCommand": "apt-get update && apt-get install -y git gnupg",
+
+    // --- POST START COMMAND (Simplified: Just Git config now) ---
+    // Variables like $GIT_USER_NAME are now available instantly from containerEnv
+    "postStartCommand": "git config --global user.name \"$GIT_USER_NAME\" && git config --global user.email \"$GIT_USER_EMAIL\" && git config  commit.gpgsign false",
+
+    // --- initializeCommand is REMOVED as shell sourcing is no longer needed ---
 
     // --- VS Code Extensions and Settings ---
     "customizations": {
         "vscode": {
             "settings": {
                 "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "python.testing.pytestEnabled": true,
-                // CRITICAL FIX: This setting tells the Python extension (debugger, testing)
-                // to explicitly load variables from the `.env` file created above.
-                "python.envFile": "${workspaceFolder}/.env"
+                "python.testing.pytestEnabled": true
             },
             "extensions": [
                 "ms-python.python", 
