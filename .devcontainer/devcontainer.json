@@ -15,12 +15,12 @@
     // in the container's environment (terminal and application).
     "containerEnv": {
         // Map your application's expected variable name to your Codespace Secret name:
-        "fmp_api_key": "${localEnv:FMP_API_KEY}",
+        //"fmp_api_key": "${localEnv:FMP_API_KEY}",
         "benzinga_api_key": "${localEnv:BENZINGA_API_KEY}",
-        "fred_api_key": "${localEnv:FRED_API_KEY}",
+        //"fred_api_key": "${localEnv:FRED_API_KEY}",
         // Add all your other individual API keys here...
-        "intrinio_api_key":"${localEnv:INTRINIO_API_KEY}",
-        "polygon_api_key":"${localEnv:POLYGON_API_KEY}",
+        //"intrinio_api_key":"${localEnv:INTRINIO_API_KEY}",
+        //"polygon_api_key":"${localEnv:POLYGON_API_KEY}",
         "trading_economics_api_key":"${localEnv:TRADING_ECONOMICS_API_KEY}",
         "api_key_intrinio":"${localEnv:API_KEY_INTRINIO}",
         "api_key_nasdaq":"${localEnv:API_KEY_NASDAQ}",
